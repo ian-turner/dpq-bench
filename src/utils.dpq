@@ -1,0 +1,29 @@
+module Utils where
+import "lib/Prelude.dpq"
+
+
+init_n : ! (n : Nat) -> Vec Qubit n
+init_n n =
+    case n of
+        Z -> VNil
+        S n' -> VCons (Init0 ()) (init_n n')
+
+
+meas_all : ! forall (n : Nat) -> Vec Qubit n -> Vec Bit n
+meas_all qs =
+    case qs of
+        VNil -> VNil
+        VCons q qs' ->
+            let b = Meas q
+                bs = meas_all qs'
+            in VCons b bs
+
+
+dynlift_all : ! forall (n : Nat) -> Vec Bit n -> Vec Bool n
+dynlift_all bs =
+    case bs of
+        VNil -> VNil
+        VCons b bs' ->
+            let d = dynlift b
+                ds = dynlift_all bs'
+            in VCons d ds
