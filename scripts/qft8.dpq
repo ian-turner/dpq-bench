@@ -1,0 +1,6 @@
+module QFT8 where
+import "qft.dpq"
+import "utils.dpq"
+
+
+qft_test = dynlift_all ((unbox (qft_test_circ 8)) ())
