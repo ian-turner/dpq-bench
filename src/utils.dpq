@@ -27,3 +27,28 @@ dynlift_all bs =
             let d = dynlift b
                 ds = dynlift_all bs'
             in VCons d ds
+
+
+binary_to_nat_rec : ! forall (n : Nat) -> Vec Bool n -> Nat
+binary_to_nat_rec bs =
+    case bs of
+        VNil -> 0
+        VCons b bs' -> (if b then 1 else 0) + mul 2 (binary_to_nat_rec bs')
+
+
+-- binary_to_nat : ! forall (n : Nat) -> Vec Bool n -> Nat
+-- binary_to_nat bs = binary_to_nat_rec (reverse_vec bs)
+
+
+nat_to_binary_rec : ! (n : Nat) -> Nat -> Vec Bool n
+nat_to_binary_rec n x =
+    case n of
+        Z -> VNil
+        S n' ->
+            let b = (if (mod x 2) == 1 then True else False)
+                bs = (nat_to_binary_rec n' (div x 2))
+            in VCons b bs
+
+
+nat_to_binary : ! (n : Nat) -> Nat -> Vec Bool n
+nat_to_binary n x = reverse_vec (nat_to_binary_rec n x)
