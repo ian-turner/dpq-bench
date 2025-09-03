@@ -1,6 +1,6 @@
 module QFT where
 import "lib/Prelude.dpq"
-import "./utils.dpq"
+import "utils.dpq"
 
 
 crotates : ! forall (m : Nat) ->

@@ -1,7 +1,7 @@
 module Adder where
 import "lib/Prelude.dpq"
-import "./utils.dpq"
-import "./qft.dpq"
+import "utils.dpq"
+import "qft.dpq"
 
 
 maj : !(Qubit -> Qubit -> Qubit -> Qubit * Qubit * Qubit)
