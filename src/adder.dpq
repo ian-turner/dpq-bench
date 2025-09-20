@@ -46,11 +46,12 @@ qft_adder n =
     (rotate_by_bs_circ n)
 
 
--- test_adder : ! (n : Nat) -> Vec Bool n -> Vec Bool n -> Vec Bool n * Vec Bool n
--- test_adder n bs as =
---    let as = init as
---        bs = init bs
---    in measure $ unbox (qft_adder n) (bs, as)
+run_adder : ! (n : Nat) -> Vec Bool n -> Vec Bool n -> Vec Bool n * Vec Bool n
+run_adder n bs as =
+   let as = init as
+       bs = init bs
+   in measure $ unbox (qft_adder n) (bs, as)
 
 
--- test_adder : ! Nat -> Nat -> Nat -> Nat
+-- test_adder : ! (Nat -> Nat -> Nat -> Nat)
+-- test_adder n x y = binary_to_nat (snd (run_adder n (nat_to_binary n x) (nat_to_binary n y)))
