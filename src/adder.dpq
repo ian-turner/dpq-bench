@@ -20,6 +20,30 @@ unmaj a b c =
   in (a, b, c)
 
 
+cuccaro_adder : ! forall (n : Nat) ->
+                  Vec Qubit n -> Vec Qubit n
+                  -> Qubit -> Qubit ->
+                  Vec Qubit n * Vec Qubit n * Qubit * Qubit
+cuccaro_adder as bs c z =
+  case as of
+    VNil ->
+      case bs of
+        VNil ->
+           let (z, c) = CNot z c
+           in (VNil, VNil, c, z)
+    VCons a as' ->
+      case bs of
+        VCons b bs' ->
+          let (a, b, c) = maj a b c
+              (as', ss, c, z) = cuccaro_adder as' bs' c z
+              (a, s, c) = unmaj a b c
+          in (VCons a as', VCons s ss, c, z)
+
+
+cuccaro_adder_circ : ! (n : Nat) -> Circ(Vec Qubit n * Vec Qubit n * Qubit * Qubit, Vec Qubit n * Vec Qubit n * Qubit * Qubit)
+cuccaro_adder_circ n = boxCirc (\ x -> let (as, bs, c, z) = x in cuccaro_adder as bs c z)
+
+
 rotate_by_bs : ! forall (n : Nat) -> Vec Qubit n -> Vec Qubit n ->
                   Vec Qubit n * Vec Qubit n
 rotate_by_bs bs as =
@@ -46,11 +70,27 @@ qft_adder n =
     (rotate_by_bs_circ n)
 
 
-run_adder : ! (n : Nat) -> Vec Bool n -> Vec Bool n -> Vec Bool n * Vec Bool n
-run_adder n bs as =
+run_qft_adder : ! (n : Nat) -> Vec Bool n -> Vec Bool n -> Vec Bool n * Vec Bool n
+run_qft_adder n bs as =
    let as = init as
        bs = init bs
        (bs, as) = (unbox (qft_adder n)) (bs, as)
+       bs = meas_all bs
+       as = meas_all as
+       bs = dynlift_all bs
+       as = dynlift_all as
+   in (bs, as)
+
+
+run_cuccaro_adder : ! (n : Nat) -> Vec Bool n -> Vec Bool n -> Vec Bool n * Vec Bool n
+run_cuccaro_adder n bs as =
+   let as = init as
+       bs = init bs
+       c = Init0 ()
+       z = Init0 ()
+       (bs, as, c, z) = (unbox (cuccaro_adder_circ n)) (bs, as, c, z)
+       _ = Discard (Meas c)
+       _ = Discard (Meas z)
        bs = meas_all bs
        as = meas_all as
        bs = dynlift_all bs

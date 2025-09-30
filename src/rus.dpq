@@ -1,0 +1,23 @@
+module RUS where
+import "lib/Prelude.dpq"
+
+-- Module containing examples of repeat-until-success circuits (Paetznick, 2014)
+
+
+v3 : !(Qubit -> Qubit)
+v3 q =
+  let a1 = tgate_inv (H (Init0 ()))
+      a2 = H (Init0 ())
+      (a1, a2) = CNot a1 a2
+      a1 = H (TGate a1)
+  in if dynlift (Meas a1)
+     then
+       let _ = Discard (Meas a2)
+       in v3 q
+     else let q = ZGate (TGate q)
+              (a2, q) = CNot a2 q
+              a2 = H (TGate a2)
+          in if dynlift (Meas a2)
+             then v3 (ZGate q)
+             else q
+
