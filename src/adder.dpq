@@ -84,8 +84,8 @@ run_qft_adder n bs as =
 
 run_cuccaro_adder : ! (n : Nat) -> Vec Bool n -> Vec Bool n -> Vec Bool n * Vec Bool n
 run_cuccaro_adder n bs as =
-   let as = init as
-       bs = init bs
+   let as = reverse_vec $ init as
+       bs = reverse_vec $ init bs
        c = Init0 ()
        z = Init0 ()
        (bs, as, c, z) = (unbox (cuccaro_adder_circ n)) (bs, as, c, z)
@@ -95,7 +95,7 @@ run_cuccaro_adder n bs as =
        as = meas_all as
        bs = dynlift_all bs
        as = dynlift_all as
-   in (bs, as)
+   in (reverse_vec bs, reverse_vec as)
 
 
 -- test_adder : ! (Nat -> Nat -> Nat -> Nat)
