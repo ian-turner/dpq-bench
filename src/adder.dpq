@@ -98,5 +98,6 @@ run_cuccaro_adder n bs as =
    in (reverse_vec bs, reverse_vec as)
 
 
+-- Currently causes a typechecking bug:
 -- test_adder : ! (Nat -> Nat -> Nat -> Nat)
 -- test_adder n x y = binary_to_nat (snd (run_adder n (nat_to_binary n x) (nat_to_binary n y)))

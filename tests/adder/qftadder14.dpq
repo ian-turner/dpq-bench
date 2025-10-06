@@ -1,0 +1,5 @@
+module QFTAdder12 where
+import "adder.dpq"
+
+
+test_result = run_qft_adder 14 (nat_to_binary 14 15) (nat_to_binary 14 81)

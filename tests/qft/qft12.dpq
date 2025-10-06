@@ -1,6 +1,5 @@
 module QFT12 where
-import "qft.dpq"
-import "utils.dpq"
+import "src/qft.dpq"
 
 
 qft_test = dynlift_all ((unbox (qft_test_circ 12)) ())
