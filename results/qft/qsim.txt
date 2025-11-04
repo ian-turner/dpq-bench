@@ -1,0 +1,11 @@
+tests/qft/qft8.dpq	0m0.683s
+tests/qft/qft12.dpq	0m0.782s
+tests/qft/qft14.dpq	0m0.773s
+tests/qft/qft16.dpq	0m0.832s
+tests/qft/qft18.dpq	0m1.023s
+tests/qft/qft20.dpq	0m1.203s
+tests/qft/qft22.dpq	0m2.013s
+tests/qft/qft23.dpq	0m3.273s
+tests/qft/qft24.dpq	0m5.873s
+tests/qft/qft25.dpq	0m11.463s
+tests/qft/qft26.dpq	0m23.504s

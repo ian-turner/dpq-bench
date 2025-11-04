@@ -1,0 +1,7 @@
+tests/qftadder/qftadder8.dpq	0m2.033s
+tests/qftadder/qftadder9.dpq	0m2.333s
+tests/qftadder/qftadder10.dpq	0m2.773s
+tests/qftadder/qftadder11.dpq	0m3.992s
+tests/qftadder/qftadder12.dpq	0m7.993s
+tests/qftadder/qftadder13.dpq	0m13.792s
+tests/qftadder/qftadder14.dpq	0m41.232s

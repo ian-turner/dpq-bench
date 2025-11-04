@@ -1,0 +1,5 @@
+module Cuccaro13 where
+import "adder.dpq"
+
+
+test_result = run_cuccaro_adder 13 (nat_to_binary 13 41) (nat_to_binary 13 23)

@@ -4,6 +4,10 @@ import "utils.dpq"
 import "qft.dpq"
 
 
+-- -------------------------------
+-- -------- Cuccaro Adder --------
+-- -------------------------------
+
 maj : !(Qubit -> Qubit -> Qubit -> Qubit * Qubit * Qubit)
 maj a b c =
   let (b, c) = CNot b c
@@ -43,6 +47,10 @@ cuccaro_adder as bs c z =
 cuccaro_adder_circ : ! (n : Nat) -> Circ(Vec Qubit n * Vec Qubit n * Qubit * Qubit, Vec Qubit n * Vec Qubit n * Qubit * Qubit)
 cuccaro_adder_circ n = boxCirc (\ x -> let (as, bs, c, z) = x in cuccaro_adder as bs c z)
 
+
+-- ---------------------------
+-- -------- QFT Adder --------
+-- ---------------------------
 
 rotate_by_bs : ! forall (n : Nat) -> Vec Qubit n -> Vec Qubit n ->
                   Vec Qubit n * Vec Qubit n
@@ -96,6 +104,54 @@ run_cuccaro_adder n bs as =
        bs = dynlift_all bs
        as = dynlift_all as
    in (reverse_vec bs, reverse_vec as)
+
+
+-- ------------------------------
+-- -------- Gidney Adder --------
+-- ------------------------------
+
+logical_and : ! (Qubit -> Qubit -> Qubit * Qubit * Qubit)
+logical_and x y =
+    let xy = TGate (H (Init0 ())) -- Initialize a |T> state
+        (xy, x) = CNot xy x
+        (xy, y) = CNot xy y
+        (y, xy) = CNot y xy
+        (x, xy) = CNot x xy
+        x = TGate_Inv x
+        y = TGate_Inv y
+        xy = TGate xy
+        (y, xy) = CNot y xy
+        (x, xy) = CNot x xy
+        xy = SGate (H xy)
+    in (x, y, xy)
+
+
+logical_and_inv : ! (Qubit -> Qubit -> Qubit -> Qubit * Qubit)
+logical_and_inv x y xy =
+    let xy = dynlift (Meas (H xy))
+    in case xy of
+        True -> CZ x y
+        False -> (x, y)
+ 
+
+test_logical_and : ! (Qubit -> Qubit -> Bool)
+test_logical_and x y =
+    let (x, y, xy) = logical_and x y
+        _ = dynlift (Meas x)
+        _ = dynlift (Meas y)
+        b = dynlift (Meas xy)
+    in b
+
+
+test_logical_and_inv : ! (Qubit -> Qubit -> Bool * Bool)
+test_logical_and_inv x y =
+    let (x, y, xy) = logical_and x y
+        (x, y) = logical_and_inv x y xy
+    in (dynlift (Meas x), dynlift (Meas y))
+
+
+gidney_adder_rec : ! forall (n : Nat) -> (Qubit -> Vec Qubit n -> Vec Qubit n -> Qubit * Vec Qubit n * Vec Qubit n)
+gidney_adder_rec c as bs = (c, as, bs)
 
 
 -- Currently causes a typechecking bug:

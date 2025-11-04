@@ -2,6 +2,8 @@
 
 TEST_DIR="$1"
 
+set -e
+
 source ./setup.sh
 
 find "$TEST_DIR" -type f -print0 \

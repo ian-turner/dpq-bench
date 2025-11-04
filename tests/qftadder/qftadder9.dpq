@@ -1,0 +1,5 @@
+module QFTAdder9 where
+import "adder.dpq"
+
+
+test_result = run_qft_adder 9 (nat_to_binary 9 3) (nat_to_binary 9 4)

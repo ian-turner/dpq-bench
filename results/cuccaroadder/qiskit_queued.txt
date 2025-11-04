@@ -1,0 +1,5 @@
+tests/cuccaroadder/cuccaro8.dpq	0m1.593s
+tests/cuccaroadder/cuccaro9.dpq	0m2.173s
+tests/cuccaroadder/cuccaro10.dpq	0m4.822s
+tests/cuccaroadder/cuccaro11.dpq	0m14.992s
+tests/cuccaroadder/cuccaro12.dpq	0m56.313s
