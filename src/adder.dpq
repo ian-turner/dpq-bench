@@ -132,13 +132,7 @@ logical_and_inv x y xy =
     in case xy of
         True -> CZ x y
         False -> (x, y)
-
-logical_and_inv_circ : Circ(Qubit * Qubit * Qubit, Qubit * Qubit)
-logical_and_inv_circ = reverse $ boxCirc (\ x -> uncurry logical_and x)
-
-logical_and_inv' : !(Qubit -> Qubit -> Qubit -> Qubit * Qubit)
-logical_and_inv' x y xy = unbox logical_and_inv_circ (x, y, xy) 
-
+ 
 
 test_logical_and : ! (Qubit -> Qubit -> Bool)
 test_logical_and x y =
@@ -156,6 +150,14 @@ test_logical_and_inv x y =
     in (dynlift (Meas x), dynlift (Meas y))
 
 
+logical_and_inv_circ : Circ(Qubit * Qubit * Qubit, Qubit * Qubit)
+logical_and_inv_circ = reverse $ boxCirc (\ x -> uncurry logical_and x)
+
+
+logical_and_inv' : !(Qubit -> Qubit -> Qubit -> Qubit * Qubit)
+logical_and_inv' x y xy = unbox logical_and_inv_circ (x, y, xy)
+
+
 gidney_adder_rec : ! forall (n : Nat) -> Qubit -> Qubit -> Vec Qubit n -> Vec Qubit n -> Qubit * Qubit * Vec Qubit n * Vec Qubit n
 gidney_adder_rec c cout as bs =
   case as of
@@ -171,18 +173,30 @@ gidney_adder_rec c cout as bs =
               (b, c) = CNot b c
               (a, b, c') = logical_and a b
               (c', c) = CNot c' c
-              (c', cout, ares, bres) = gidney_adder_rec c' cout ares bres 
+              (c', cout, ares, bres) = gidney_adder_rec c' cout ares bres
               (c', c) = CNot c' c
               (a, b) = logical_and_inv' a b c'
               (a, c) = CNot a c
               (b, a) = CNot b a
           in (c, cout, VCons a ares, VCons b bres)
-      
-    
+
+
 gidney_adder_circ : ! (n : Nat) -> Circ(Qubit * Qubit * Vec Qubit n * Vec Qubit n,  Qubit * Qubit * Vec Qubit n * Vec Qubit n)
 gidney_adder_circ n =
-  boxCirc (\ x -> let (a, b, c, d) = x in gidney_adder_rec a b c d) 
+  boxCirc (\ x -> let (a, b, c, d) = x in gidney_adder_rec a b c d)
 
--- Currently causes a typechecking bug:
--- test_adder : ! (Nat -> Nat -> Nat -> Nat)
--- test_adder n x y = binary_to_nat (snd (run_adder n (nat_to_binary n x) (nat_to_binary n y)))
+
+run_gidney_adder : ! (n : Nat) -> Vec Bool n -> Vec Bool n -> Vec Bool n * Vec Bool n
+run_gidney_adder n as bs =
+   let as = reverse_vec $ init as
+       bs = reverse_vec $ init bs
+       c = Init0 ()
+       z = Init0 ()
+       (c, z, as, bs) = (unbox (gidney_adder_circ n)) (c, z, as, bs)
+       _ = Discard (Meas c)
+       _ = Discard (Meas z)
+       bs = meas_all bs
+       as = meas_all as
+       bs = dynlift_all bs
+       as = dynlift_all as
+   in (reverse_vec as, reverse_vec bs)
