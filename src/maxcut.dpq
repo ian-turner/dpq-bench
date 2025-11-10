@@ -99,13 +99,17 @@ u_c_circ m n es gamma = box (Vec Qubit n) (\x -> (u_c es gamma) x)
 --            in (maxcut_rec as edges xs)
 
 
+maxcut_layer : ! forall (n k : Nat) -> {m : Nat} -> Real m -> Real m -> Vec (Nat * Nat) k
+               -> Vec Qubit n -> Vec Qubit n
+maxcut_layer m gamma beta edges xs = (u_c edges gamma (u_b beta xs))
+
+
 maxcut_one_layer : ! forall (k : Nat) -> {m : Nat} -> (n : Nat) -> Real m -> Real m
                         -> Vec (Nat * Nat) k -> Vec Bit n
 maxcut_one_layer m n gamma beta edges =
     let xs = init_n n
         xs = all_hs xs
-        xs = u_c edges gamma xs
-        xs = u_b gamma xs
+        xs = maxcut_layer gamma beta edges xs
     in (meas_all xs)
 
 
