@@ -52,3 +52,10 @@ nat_to_binary_rec n x =
 
 nat_to_binary : ! (n : Nat) -> Nat -> Vec Bool n
 nat_to_binary n x = reverse_vec (nat_to_binary_rec n x)
+
+
+all_hs : ! forall (n : Nat) -> Vec Qubit n -> Vec Qubit n
+all_hs xs =
+    case xs of
+        VNil -> VNil
+        VCons x xs' -> VCons (H x) (all_hs xs')

@@ -1,0 +1,103 @@
+module MaxCut where
+import "lib/Prelude.dpq"
+import "utils.dpq"
+
+-- From article: https://pennylane.ai/qml/demos/tutorial_qaoa_maxcut
+
+
+cnot_on_k : ! forall (n : Nat) -> Qubit -> Vec Qubit n -> Nat -> Qubit * Vec Qubit n
+cnot_on_k t xs k =
+    case xs of
+        VCons x xs ->
+            case k of
+                Z -> let (t, x) = CNot t x in (t, VCons x xs)
+                S k' -> let (t, xs) = cnot_on_k t xs k' in (t, VCons x xs)
+
+
+cnot_on_k_circ : ! (n : Nat) -> Nat -> Circ(Qubit * Vec Qubit n, Qubit * Vec Qubit n)
+cnot_on_k_circ n k = box (Qubit * Vec Qubit n) (\x -> (uncurry (\y z -> cnot_on_k y z k)) x) 
+
+
+cnot_btwn_i_j : ! forall (n : Nat) -> Nat -> Nat -> Vec Qubit n -> Vec Qubit n
+cnot_btwn_i_j i j v =
+    case v of
+        VCons x xs ->
+            case i of
+                Z ->
+                    case j of
+                        S j' -> let (x', xs') = cnot_on_k x xs j' in VCons x' xs'
+                S i' ->
+                    case j of
+                        S j' -> VCons x (cnot_btwn_i_j i' j' xs)
+
+
+cnot_btwn_i_j_circ : ! (n : Nat) -> Nat -> Nat -> Circ(Vec Qubit n, Vec Qubit n)
+cnot_btwn_i_j_circ n i j  = box (Vec Qubit n) (\x -> (cnot_btwn_i_j i j x))
+    
+
+
+u_b : ! forall (n : Nat) -> {m : Nat} -> (Real m) -> Vec Qubit n -> Vec Qubit n
+u_b m beta xs =
+    case xs of
+        VNil -> VNil
+        VCons x xs ->
+            let x = H x
+                x = Rot (beta + beta) x
+                x = H x
+                xs = u_b beta xs
+            in (VCons x xs)
+
+
+gate_on_i : ! forall (n : Nat) -> Nat -> (Qubit -> Qubit) -> Vec Qubit n -> Vec Qubit n
+gate_on_i i g xs =
+    case xs of
+        VCons x xs' ->
+            case i of
+                Z -> let x' = g x in VCons x' xs'
+                S i' -> VCons x (gate_on_i i' g xs')
+
+
+u_c : ! forall (n k : Nat) -> {m : Nat} -> Vec (Nat * Nat) k -> (Real m) -> Vec Qubit n -> Vec Qubit n
+u_c m es gamma xs =
+    case es of
+        VNil -> xs
+        VCons e es' ->
+            let (i, j) = e
+                xs = cnot_btwn_i_j i j xs
+                xs = gate_on_i i (Rot gamma) xs
+                xs = cnot_btwn_i_j i j xs
+            in u_c es' gamma xs
+
+
+u_c_circ : ! forall (k : Nat) -> {m : Nat} -> (n : Nat) -> Vec (Nat * Nat) k
+           -> (Real m) -> Circ(Vec Qubit n, Vec Qubit n)
+u_c_circ m n es gamma = box (Vec Qubit n) (\x -> (u_c es gamma) x)
+
+
+-- Currently causes shape error
+--maxcut_rec : ! forall (n p k : Nat) -> {m : Nat} -> Vec (Real m) p -> Vec (Real m) p
+--                  -> Vec (Nat * Nat) k -> Vec Qubit n -> Vec Qubit n
+--maxcut_rec m gs bs es xs =
+--    case gs of
+--        VNil -> xs
+--        VCons g gs ->
+--            case bs of
+--                VCons b bs ->
+--                    let xs = u_c es g xs
+--                        xs = u_b b xs
+--                    in (maxcut_rec gs bs es xs)
+
+
+maxcut_one_layer : ! forall (k : Nat) -> {m : Nat} -> (n : Nat) -> Real m -> Real m
+                        -> Vec (Nat * Nat) k -> Vec Bit n
+maxcut_one_layer m n gamma beta edges =
+    let xs = init_n n
+        xs = all_hs xs
+        xs = u_c edges gamma xs
+        xs = u_b gamma xs
+    in (meas_all xs)
+
+
+maxcut_one_layer_circ : ! forall (k : Nat) -> {m : Nat} -> (n : Nat) -> Real m -> Real m
+                        -> Vec (Nat * Nat) k -> Circ(Unit, Vec Bit n)
+maxcut_one_layer_circ m n gamma beta edges = box Unit (\x -> (maxcut_one_layer n gamma beta edges))
