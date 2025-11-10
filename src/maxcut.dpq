@@ -2,7 +2,10 @@ module MaxCut where
 import "lib/Prelude.dpq"
 import "utils.dpq"
 
--- From article: https://pennylane.ai/qml/demos/tutorial_qaoa_maxcut
+-- | MaxCut quantum approximate optimization algorithm, as described in
+-- | `A Quantum Approximate Optimization Algorithm' (Farhi, 2014)
+
+-- | Circuit implementation from article: https://pennylane.ai/qml/demos/tutorial_qaoa_maxcut
 
 
 cnot_on_k : ! forall (n : Nat) -> Qubit -> Vec Qubit n -> Nat -> Qubit * Vec Qubit n
@@ -74,7 +77,8 @@ u_c_circ : ! forall (k : Nat) -> {m : Nat} -> (n : Nat) -> Vec (Nat * Nat) k
 u_c_circ m n es gamma = box (Vec Qubit n) (\x -> (u_c es gamma) x)
 
 
--- Currently causes shape error
+-- ** Currently causes shape error **
+
 --maxcut_rec : ! forall (n p k : Nat) -> {m : Nat} -> Vec (Real m) p -> Vec (Real m) p
 --                  -> Vec (Nat * Nat) k -> Vec Qubit n -> Vec Qubit n
 --maxcut_rec m gs bs es xs =
@@ -101,7 +105,7 @@ u_c_circ m n es gamma = box (Vec Qubit n) (\x -> (u_c es gamma) x)
 
 maxcut_layer : ! forall (n k : Nat) -> {m : Nat} -> Real m -> Real m -> Vec (Nat * Nat) k
                -> Vec Qubit n -> Vec Qubit n
-maxcut_layer m gamma beta edges xs = (u_c edges gamma (u_b beta xs))
+maxcut_layer m gamma beta edges xs = (u_b beta (u_c edges gamma xs))
 
 
 maxcut_one_layer : ! forall (k : Nat) -> {m : Nat} -> (n : Nat) -> Real m -> Real m
@@ -116,3 +120,20 @@ maxcut_one_layer m n gamma beta edges =
 maxcut_one_layer_circ : ! forall (k : Nat) -> {m : Nat} -> (n : Nat) -> Real m -> Real m
                         -> Vec (Nat * Nat) k -> Circ(Unit, Vec Bit n)
 maxcut_one_layer_circ m n gamma beta edges = box Unit (\x -> (maxcut_one_layer n gamma beta edges))
+
+
+maxcut_two_layer : ! forall (k : Nat) -> {m : Nat} -> (n :Nat) -> (Real m * Real m) -> (Real m * Real m)
+                     -> Vec (Nat * Nat) k -> Vec Bit n
+maxcut_two_layer m n gammas betas edges =
+    let xs = init_n n
+        xs = all_hs xs
+        (gamma1, gamma2) = gammas
+        (beta1, beta2) = betas
+        xs = maxcut_layer gamma1 beta1 edges xs
+        xs = maxcut_layer gamma2 beta2 edges xs
+    in (meas_all xs)
+
+
+maxcut_two_layer_circ : ! forall (k : Nat) -> {m : Nat} -> (n : Nat) -> (Real m * Real m)
+                        -> (Real m * Real m) -> Vec (Nat * Nat) k -> Circ(Unit, Vec Bit n)
+maxcut_two_layer_circ m n gammas betas edges = box Unit (\x -> (maxcut_two_layer n gammas betas edges))

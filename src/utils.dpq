@@ -59,3 +59,35 @@ all_hs xs =
     case xs of
         VNil -> VNil
         VCons x xs' -> VCons (H x) (all_hs xs')
+
+
+repeat_f : ! {a : Type} -> (n : Nat) -> (!(Unit -> a)) -> Vec a n
+repeat_f a n f =
+    case n of
+        Z -> VNil
+        S n' -> VCons (f ()) (repeat_f n' f)
+
+
+bitstr_eq : ! forall (n : Nat) -> Vec Bool n -> Vec Bool n -> Bool
+bitstr_eq xs ys =
+    case xs of
+        VNil -> True
+        VCons x xs ->
+            case ys of
+                VCons y ys -> if (x == y) then (bitstr_eq xs ys) else False
+
+
+get_counts : ! forall (n m : Nat) -> Vec (Vec Bool n) m -> Vec Bool n -> Nat
+get_counts samples bitstr =
+    case samples of
+        VNil -> Z
+        VCons s samples' ->
+            let c = if (bitstr_eq s bitstr) then 1 else 0
+            in c + (get_counts samples' bitstr)
+
+
+pow : ! (Nat -> Nat -> Nat)
+pow x y =
+    case y of
+        Z -> 1
+        S y' -> mul x (pow x y')

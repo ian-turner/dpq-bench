@@ -1,0 +1,6 @@
+module MaxCutN8P1 where
+import "src/maxcut.dpq"
+
+
+graph = [(1, 2), (1, 4), (1, 5), (1, 6), (2, 6), (2, 7), (3, 5), (3, 7), (4, 5)]
+maxcut_test = dynlift_all ((unbox (maxcut_one_layer_circ 8 2.6 3.1 graph)) ())

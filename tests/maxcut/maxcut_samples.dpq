@@ -1,0 +1,21 @@
+module MaxCutSamples where
+import "src/maxcut.dpq"
+
+
+graph = [(0, 1), (0, 3), (1, 2), (2, 3)]
+maxcut_test_p1 : ! (Unit -> Vec Bool 4)
+maxcut_test_p1 = (\x -> dynlift_all ((unbox (maxcut_one_layer_circ 4 -0.78727189 -1.14739954 graph)) x))
+
+
+samples1 = repeat_f 100 maxcut_test_p1
+count0101_p1 = get_counts samples1 [False, True, False, True]
+count1010_p1 = get_counts samples1 [True, False, True, False]
+
+
+maxcut_test_p2 : ! (Unit -> Vec Bool 4)
+maxcut_test_p2 = (\x -> dynlift_all ((unbox (maxcut_two_layer_circ 4 (1.68594408, -0.81397466) (0.40427707, 0.77262866) graph)) x))
+
+
+samples2 = repeat_f 100 maxcut_test_p2
+count0101_p2 = get_counts samples2 [False, True, False, True]
+count1010_p2 = get_counts samples2 [True, False, True, False]
