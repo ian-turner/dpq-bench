@@ -48,6 +48,22 @@ cuccaro_adder_circ : ! (n : Nat) -> Circ(Vec Qubit n * Vec Qubit n * Qubit * Qub
 cuccaro_adder_circ n = boxCirc (\ x -> let (as, bs, c, z) = x in cuccaro_adder as bs c z)
 
 
+run_cuccaro_adder : ! (n : Nat) -> Vec Bool n -> Vec Bool n -> Vec Bool n * Vec Bool n
+run_cuccaro_adder n bs as =
+   let as = reverse_vec $ init as
+       bs = reverse_vec $ init bs
+       c = Init0 ()
+       z = Init0 ()
+       (bs, as, c, z) = (unbox (cuccaro_adder_circ n)) (bs, as, c, z)
+       _ = Discard (Meas c)
+       _ = Discard (Meas z)
+       bs = meas_all bs
+       as = meas_all as
+       bs = dynlift_all bs
+       as = dynlift_all as
+   in (reverse_vec bs, reverse_vec as)
+
+
 -- ---------------------------
 -- -------- QFT Adder --------
 -- ---------------------------
@@ -90,21 +106,15 @@ run_qft_adder n bs as =
    in (bs, as)
 
 
-run_cuccaro_adder : ! (n : Nat) -> Vec Bool n -> Vec Bool n -> Vec Bool n * Vec Bool n
-run_cuccaro_adder n bs as =
-   let as = reverse_vec $ init as
-       bs = reverse_vec $ init bs
-       c = Init0 ()
-       z = Init0 ()
-       (bs, as, c, z) = (unbox (cuccaro_adder_circ n)) (bs, as, c, z)
-       _ = Discard (Meas c)
-       _ = Discard (Meas z)
-       bs = meas_all bs
-       as = meas_all as
-       bs = dynlift_all bs
-       as = dynlift_all as
-   in (reverse_vec bs, reverse_vec as)
-
+run_qft_adder_circ : ! {n : Nat} -> Vec Bool n -> Vec Bool n -> Circ(Unit, Vec Bit n * Vec Bit n)
+run_qft_adder_circ n as bs =
+    box Unit (\x ->
+        let as = init as
+            bs = init bs
+            (bs, as) = (unbox (qft_adder n)) (bs, as)
+            bs = meas_all bs
+            as = meas_all as
+        in (bs, as))
 
 -- ------------------------------
 -- -------- Gidney Adder --------
