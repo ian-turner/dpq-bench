@@ -1,4 +1,4 @@
-OpenQASM 3.0;
+OPENQASM 3.0;
 include "stdgates.inc";
 bit[8] bits;
 qubit[8] qubits;
