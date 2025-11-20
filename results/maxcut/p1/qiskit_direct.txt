@@ -1,0 +1,7 @@
+tests/maxcut/p1/n4.qasm	    0m0.001s
+tests/maxcut/p1/n8.qasm	    0m0.002s
+tests/maxcut/p1/n12.qasm	0m0.005s
+tests/maxcut/p1/n16.qasm	0m0.012s
+tests/maxcut/p1/n20.qasm	0m0.107s
+tests/maxcut/p1/n24.qasm	0m1.123s
+tests/maxcut/p1/n28.qasm	0m22.907s
