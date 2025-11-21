@@ -6,7 +6,7 @@ set -e
 
 source scripts/setup.sh
 
-find "$TEST_DIR" -type f -print0 \
+find "$TEST_DIR" -type f -name "*.dpq" -print0 \
   | sort -z -V \
   | while IFS= read -r -d '' file; do
       if [ -f "$file" ]; then

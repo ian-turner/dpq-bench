@@ -196,7 +196,7 @@ gidney_adder_circ n =
   boxCirc (\ x -> let (a, b, c, d) = x in gidney_adder_rec a b c d)
 
 
-run_gidney_adder : ! (n : Nat) -> Vec Bool n -> Vec Bool n -> Vec Bool n * Vec Bool n
+run_gidney_adder : ! {n : Nat} -> Vec Bool n -> Vec Bool n -> Vec Bit n * Vec Bit n
 run_gidney_adder n as bs =
    let as = reverse_vec $ init as
        bs = reverse_vec $ init bs
@@ -207,6 +207,8 @@ run_gidney_adder n as bs =
        _ = Discard (Meas z)
        bs = meas_all bs
        as = meas_all as
-       bs = dynlift_all bs
-       as = dynlift_all as
    in (reverse_vec as, reverse_vec bs)
+
+
+run_gidney_adder_circ : ! {n : Nat} -> Vec Bool n -> Vec Bool n -> Circ(Unit, Vec Bit n * Vec Bit n)
+run_gidney_adder_circ n as bs = box Unit (\x -> (run_gidney_adder as bs))

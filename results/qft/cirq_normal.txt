@@ -1,11 +1,6 @@
-tests/qft/qft4.dpq	0m0.752s
-tests/qft/qft6.dpq	0m0.973s
-tests/qft/qft8.dpq	0m1.133s
-tests/qft/qft10.dpq	0m1.392s
-tests/qft/qft12.dpq	0m1.712s
-tests/qft/qft14.dpq	0m1.983s
-tests/qft/qft16.dpq	0m2.383s
-tests/qft/qft18.dpq	0m3.153s
-tests/qft/qft20.dpq	0m5.392s
-tests/qft/qft22.dpq	0m14.953s
-tests/qft/qft24.dpq	0m56.843s
+tests/qft/qft4.dpq	0m0.753s
+tests/qft/qft8.dpq	0m1.222s
+tests/qft/qft12.dpq	0m1.662s
+tests/qft/qft16.dpq	0m2.443s
+tests/qft/qft20.dpq	0m5.232s
+tests/qft/qft24.dpq	0m57.453s

@@ -1,0 +1,6 @@
+module Gidney8 where
+import "adder.dpq"
+
+
+test_circ = run_gidney_adder_circ (nat_to_binary 8 13) (nat_to_binary 8 56)
+test = let (x, y) = ((unbox test_circ) ()) in (dynlift_all x, dynlift_all y)

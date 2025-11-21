@@ -1,0 +1,7 @@
+tests/qft/qft4.qasm	0m0.004s
+tests/qft/qft8.qasm	0m0.008s
+tests/qft/qft12.qasm	0m0.015s
+tests/qft/qft16.qasm	0m0.031s
+tests/qft/qft20.qasm	0m0.088s
+tests/qft/qft24.qasm	0m0.945s
+tests/qft/qft28.qasm	0m14.430s

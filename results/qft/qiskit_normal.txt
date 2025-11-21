@@ -1,8 +1,4 @@
 tests/qft/qft4.dpq	0m0.782s
-tests/qft/qft6.dpq	0m0.822s
-tests/qft/qft8.dpq	0m0.913s
-tests/qft/qft10.dpq	0m1.072s
-tests/qft/qft12.dpq	0m1.503s
-tests/qft/qft14.dpq	0m3.193s
-tests/qft/qft16.dpq	0m12.392s
-tests/qft/qft18.dpq	0m51.193s
+tests/qft/qft8.dpq	0m0.893s
+tests/qft/qft12.dpq	0m1.492s
+tests/qft/qft16.dpq	0m12.153s
