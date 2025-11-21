@@ -3,4 +3,5 @@ import "qft.dpq"
 import "utils.dpq"
 
 
-qft_test = dynlift_all ((unbox (qft_test_circ 16)) ())
+test_circ = qft_test_circ 16
+qft_test = dynlift_all $ (unbox test_circ) ()
