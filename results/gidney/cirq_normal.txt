@@ -1,0 +1,3 @@
+tests/gidney/gidney4.dpq	0m2.142s
+tests/gidney/gidney6.dpq	0m3.572s
+tests/gidney/gidney8.dpq	0m47.927s

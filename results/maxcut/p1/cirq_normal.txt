@@ -1,0 +1,4 @@
+tests/maxcut/maxcut_n4p1.dpq	0m0.309s
+tests/maxcut/maxcut_n8p1.dpq	0m0.814s
+tests/maxcut/maxcut_n12p1.dpq	0m1.924s
+tests/maxcut/maxcut_n16p1.dpq	0m2.925s
