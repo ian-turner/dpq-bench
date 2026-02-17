@@ -1,0 +1,6 @@
+module Tele16 where
+import "tele.dpq"
+import "utils.dpq"
+
+
+test = dynlift_all $ meas_all $ tele_n_2 $ all_hs $ init_n 16

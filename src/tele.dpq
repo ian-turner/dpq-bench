@@ -52,3 +52,21 @@ tele2 q =
       (x, y) = alice2 a q
       z = bob2 b x y
   in z
+
+tele_n_1 : ! forall (n : Nat) -> Vec Qubit n -> Vec Qubit n
+tele_n_1 qs =
+  case qs of
+    VNil -> VNil
+    VCons q qs' ->
+      let q' = tele1 q
+          qs'' = tele_n_1 qs'
+      in (VCons q' qs'')
+
+tele_n_2 : ! forall (n : Nat) -> Vec Qubit n -> Vec Qubit n
+tele_n_2 qs =
+  case qs of
+    VNil -> VNil
+    VCons q qs' ->
+      let q' = tele2 q
+          qs'' = tele_n_2 qs'
+      in (VCons q' qs'')
