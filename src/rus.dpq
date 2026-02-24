@@ -33,4 +33,4 @@ v3_example xs =
         VNil -> VCons x VNil
         VCons y ys ->
           let (x, y) = CNot x y
-          in (VCons x (VCons y ys))
+          in (VCons x (v3_example (VCons y ys)))
