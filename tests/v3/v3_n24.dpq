@@ -1,0 +1,6 @@
+module V3N24 where
+import "utils.dpq"
+import "rus.dpq"
+
+
+test = dynlift_all $ meas_all $ v3_example $ all_hs $ init_n 24

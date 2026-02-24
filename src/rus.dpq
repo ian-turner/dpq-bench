@@ -1,10 +1,10 @@
 module RUS where
 import "lib/Prelude.dpq"
+-- | Module containing examples of
+-- | repeat-until-success circuits (Paetznick, 2014)
 
--- Module containing examples of repeat-until-success circuits (Paetznick, 2014)
 
-
-v3 : !(Qubit -> Qubit)
+v3 : ! (Qubit -> Qubit)
 v3 q =
   let a1 = tgate_inv (H (Init0 ()))
       a2 = H (Init0 ())
@@ -21,3 +21,16 @@ v3 q =
              then v3 (ZGate q)
              else q
 
+
+-- | Generate example of v3 circuit
+v3_example : ! forall (n : Nat) -> Vec Qubit n -> Vec Qubit n
+v3_example xs =
+  case xs of
+    VNil -> VNil
+    VCons x xs' ->
+      let x = v3 x in
+      case xs' of
+        VNil -> VCons x VNil
+        VCons y ys ->
+          let (x, y) = CNot x y
+          in (VCons x (VCons y ys))
